@@ -3,22 +3,28 @@ import moment from "moment";
 function DateTime(props) {
   return <p className="date">{props.date}</p>;
 }
-function DateTimePretty(date) {
-  var now = moment(new Date());
-  var end = moment(date.date);
-  var duration = moment.duration(now.diff(end));
-  var diff = duration.asMinutes();
-  let val;
-  if (diff < 60) {
-    val = "12 минут назад";
-  } else if (diff > 60 && diff < 1440) {
-    val = "5 часов назад";
-  } else if (diff > 1440) {
-    const day = Math.round(duration.asDays());
-    val = `${day} дней назад`;
-  }
-  return <DateTime date={val} />;
+function withPrettyDate(Component) {
+  return (props) => {
+    const { date } = props;
+
+    const now = moment(new Date());
+    const end = moment(date);
+    const duration = moment.duration(now.diff(end));
+    const diff = duration.asMinutes();
+    let val;
+    if (diff < 60) {
+      val = "12 минут назад";
+    } else if (diff > 60 && diff < 1440) {
+      val = "5 часов назад";
+    } else if (diff > 1440) {
+      const day = Math.round(duration.asDays());
+      val = `${day} дней назад`;
+    }
+
+    return <Component {...props} date={val} />;
+  };
 }
+const DateTimePretty = withPrettyDate(DateTime);
 function Video(props) {
   return (
     <div className="video">
@@ -42,7 +48,7 @@ export default function App() {
     {
       url:
         "https://www.youtube.com/embed/rN6nlNC9WQA?rel=0&amp;controls=0&amp;showinfo=0",
-      date: "2020-06-27 22:30:00",
+      date: "2020-07-04 22:10:00",
     },
     {
       url:
